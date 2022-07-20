@@ -147,15 +147,7 @@ function Step4(props) {
   );
 }
 
-const AppContext = createContext([
-  {
-    step: 1,
-    name: "",
-    emails: "",
-    birthday: "",
-    password: "",
-  },
-]);
+const AppContext = createContext();
 
 function MultiStepForm() {
   const [state, setState] = useState({
