@@ -36,11 +36,12 @@ function App() {
     fiatAmount: "",
     wucAmount: "",
     currency: "USD",
-    priceChange: "",
+    priceChange: null,
   });
 
   const intervalRef = useRef();
   const fiatAmountRef = useRef(null);
+  const currencyRef = useRef(null);
   const debFetch = debounce(() => {
     fetch(
       `https://api.frontendeval.com/fake/crypto/${state.currency.toLowerCase()}`
@@ -49,7 +50,7 @@ function App() {
       .then((data) => {
         dispatch({
           type: "SET_WUC_AMOUNT",
-          payload: parseInt(fiatAmountRef.current.value) * data.value,
+          payload: parseInt(state.fiatAmount) * data.value,
         });
 
         if (intervalRef.current) {
@@ -57,8 +58,9 @@ function App() {
         }
 
         intervalRef.current = setInterval(() => {
+          // Should I use refs instead of state here ??
           fetch(
-            `https://api.frontendeval.com/fake/crypto/${state.currency.toLowerCase()}`
+            `https://api.frontendeval.com/fake/crypto/${currencyRef.current.value.toLowerCase()}`
           )
             .then((response) => response.json())
             .then((data) => {
@@ -100,6 +102,7 @@ function App() {
             }}
           ></input>
           <select
+            ref={currencyRef}
             value={state.currency}
             onChange={(e) => {
               dispatch({ type: "SET_CURRENCY", payload: e.target.value });
@@ -125,15 +128,17 @@ function App() {
         >
           <div>{state.wucAmount.toFixed(2)}</div>
           <div>WUC</div>
-          <div
-            style={{
-              color: state.priceChange >= 0 ? "green" : "red",
-            }}
-          >
-            {`${state.priceChange >= 0 ? "↑" : "↓"} ${state.priceChange.toFixed(
-              2
-            )}`}
-          </div>
+          {state.priceChange && (
+            <div
+              style={{
+                color: state.priceChange >= 0 ? "green" : "red",
+              }}
+            >
+              {`${
+                state.priceChange >= 0 ? "↑" : "↓"
+              } ${state.priceChange.toFixed(2)}`}
+            </div>
+          )}
         </div>
       )}
     </div>
