@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
+require("./App.css");
 
 function App() {
   const [word, setWord] = useState("");
-  const [trial, setTrial] = useState(0);
-  const [autoFocus, setAutoFocus] = useState([0, 0, 0]);
+  const [currentLine, setCurrentLine] = useState(0);
+  const [currentCell, setCurrentCell] = useState([0, 0]);
   const [lines, setLines] = useState([
     ["", "", "", "", ""],
     ["", "", "", "", ""],
@@ -34,119 +35,79 @@ function App() {
   };
 
   const ar = [];
-  const refs = [];
   for (let i = 0; i < 6; i++) {
     for (let j = 0; j < 5; j++) {
       ar.push([i, j]);
     }
   }
 
-  const incrementAutoFocus = () => {
-    const i = autoFocus[0];
-    const j = autoFocus[1];
-    const k = autoFocus[2];
-
-    if (j <= 3) {
-      setAutoFocus([i, j + 1, k + 1]);
-    } else if (j === 4) {
-      if (i <= 4) {
-        setAutoFocus([i + 1, 0, k + 1]);
-      } else if (i === 5) {
-        // stop
-      }
-    }
-  };
-
-  const decrementAutoFocus = () => {
-    const i = autoFocus[0];
-    const j = autoFocus[1];
-    const k = autoFocus[2];
-
-    if (j > 0) {
-      setAutoFocus([i, j - 1, k + 1]);
-    } else if (j === 0) {
-      if (i > 0) {
-        setAutoFocus([i - 1, 4, k + 1]);
-      } else if (i === 0) {
-        // stop
-      }
-    }
-  };
-
   return (
     <div
       style={{
         display: "flex",
-        width: "99vw",
-        height: "80vh",
+        width: "100vw",
+        height: "100vh",
         justifyContent: "center",
         alignItems: "center",
       }}
+      onKeyDown={(e) => {
+        const i = currentCell[0];
+        const j = currentCell[1];
+        if (/^[A-Za-z]$/.test(e.key)) {
+          const copyLines = [...lines];
+          if (copyLines[i][j] === "") {
+            copyLines[i][j] = e.key.toUpperCase();
+          } else if (j < 4) {
+            copyLines[i][j + 1] = e.key.toUpperCase();
+            setCurrentCell([i, j + 1]);
+          }
+          setLines(copyLines);
+        } else if (e.key === "Backspace") {
+          const copyLines = [...lines];
+          copyLines[i][j] = "";
+          setLines(copyLines);
+          setCurrentCell([i, j ? j - 1 : j]);
+        } else if (e.key === "Enter") {
+        }
+      }}
+      tabIndex={-1}
     >
-      <form>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(5, 66px)",
-            gridTemplateRows: "repeat(6, 66px)",
-            columnGap: "10px",
-            rowGap: "10px",
-          }}
-        >
-          {ar.map((elt) => {
-            const i = elt[0];
-            const j = elt[1];
-            let isAutoFocused = false;
-            if (i === autoFocus[0] && j === autoFocus[1]) {
-              isAutoFocused = true;
-            }
-            const key = `${i}-${j}-${autoFocus[2]}`;
-            return (
-              <input
-                id={key}
-                key={key}
-                type="text"
-                maxLength={1}
-                autoFocus={isAutoFocused}
-                value={lines[i][j]}
-                onBlur={(e) => {
-                  document.getElementById(key).focus();
-                }}
-                onChange={(e) => {
-                  e.preventDefault();
-                  if (/^[A-Za-z]/.test(e.target.value)) {
-                    const copyLines = [...lines];
-                    copyLines[i][j] = e.target.value.toUpperCase();
-                    setLines(copyLines);
-                    if (e.target.value.length !== 0 && trial === i && j !== 4) {
-                      incrementAutoFocus();
-                    }
-                  }
-                }}
-                onKeyDown={(e) => {
-                  // e.preventDefault();
-                  if (e.code === "Backspace") {
-                    const copyLines = [...lines];
-                    copyLines[i][j] = "";
-                    setLines(copyLines);
-                    decrementAutoFocus();
-                  }
-                  if (e.code === "Enter") {
-                    const guess = lines[i].slice(0, 5).join("");
-                    console.log(guess);
-                  }
-                }}
-                style={{
-                  textAlign: "center",
-                  fontWeight: "bold",
-                  fontSize: "24px",
-                  caretColor: "transparent",
-                }}
-              ></input>
-            );
-          })}
-        </div>
-      </form>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(5, 66px)",
+          gridTemplateRows: "repeat(6, 66px)",
+          columnGap: "10px",
+          rowGap: "10px",
+        }}
+      >
+        {ar.map((elt) => {
+          const i = elt[0];
+          const j = elt[1];
+          let focused = false;
+          if (i === currentCell[0] && j === currentCell[1]) {
+            focused = true;
+          }
+          const key = `${i}-${j}`;
+          return (
+            <div
+              key={key}
+              style={{
+                display: "flex",
+                fontWeight: "bold",
+                fontSize: "24px",
+                alignItems: "center",
+                justifyContent: "center",
+                borderColor: focused ? "grey" : "grey",
+                borderStyle: "solid",
+                borderWidth: lines[i][j] !== "" ? "2px" : "1px",
+              }}
+            >
+              <div>{lines[i][j]}</div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
