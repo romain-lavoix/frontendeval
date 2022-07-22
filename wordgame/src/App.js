@@ -3,7 +3,7 @@ import axios from "axios";
 
 function App() {
   const [word, setWord] = useState("");
-  const [trials, setTrials] = useState(0);
+  const [trial, setTrial] = useState(0);
   const [autoFocus, setAutoFocus] = useState([0, 0, 0]);
   const [lines, setLines] = useState([
     ["", "", "", "", ""],
@@ -100,37 +100,40 @@ function App() {
             if (i === autoFocus[0] && j === autoFocus[1]) {
               isAutoFocused = true;
             }
+            const key = `${i}-${j}-${autoFocus[2]}`;
             return (
               <input
-                id={`${i}-${j}-${autoFocus[2]}`}
-                key={`${i}-${j}-${autoFocus[2]}`}
+                id={key}
+                key={key}
                 type="text"
                 maxLength={1}
                 autoFocus={isAutoFocused}
                 value={lines[i][j]}
                 onBlur={(e) => {
-                  document.getElementById(`${i}-${j}-${autoFocus[2]}`).focus();
+                  document.getElementById(key).focus();
                 }}
                 onChange={(e) => {
                   e.preventDefault();
-                  if (
-                    /^[A-Za-z]/.test(e.target.value) ||
-                    e.target.value.length === 0
-                  ) {
+                  if (/^[A-Za-z]/.test(e.target.value)) {
                     const copyLines = [...lines];
                     copyLines[i][j] = e.target.value.toUpperCase();
                     setLines(copyLines);
-                    if (e.target.value.length !== 0) {
+                    if (e.target.value.length !== 0 && trial === i && j !== 4) {
                       incrementAutoFocus();
                     }
                   }
                 }}
                 onKeyDown={(e) => {
-                  if (e.keyCode === 8) {
+                  // e.preventDefault();
+                  if (e.code === "Backspace") {
                     const copyLines = [...lines];
                     copyLines[i][j] = "";
                     setLines(copyLines);
                     decrementAutoFocus();
+                  }
+                  if (e.code === "Enter") {
+                    const guess = lines[i].slice(0, 5).join("");
+                    console.log(guess);
                   }
                 }}
                 style={{
