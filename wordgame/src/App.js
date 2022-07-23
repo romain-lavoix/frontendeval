@@ -158,7 +158,9 @@ function App() {
               setMessageWithTimeout("this word is not in the dictionary");
             } else if (results.found) {
               setMessage(
-                `You correctly guessed the word in ${currentLine + 1} tries!`
+                `You correctly guessed the word in ${currentLine + 1} tr${
+                  currentLine ? "ies" : "y"
+                }!`
               );
             } else {
               const remainingTries = 6 - (currentLine + 1);
@@ -182,20 +184,29 @@ function App() {
         style={{
           display: "flex",
           flexDirection: "column",
+          justifyContent: "center",
           gap: "50px",
-          margin: "12px",
+          margin: "5px",
         }}
       >
         <div
-          style={{ alignSelf: "center", fontSize: "24px", fontWeight: "bold" }}
+          style={{
+            fontSize: "1.5rem",
+            fontWeight: "bold",
+            textAlign: "center",
+          }}
         >
           {message}
         </div>
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(5, 66px)",
-            gridTemplateRows: "repeat(6, 66px)",
+            width: "25rem",
+            height: "20rem",
+            justifyContent: "center",
+            justifyItems: "stretch",
+            gridTemplateColumns: "repeat(5, 1fr)",
+            gridTemplateRows: "repeat(6, 1fr)",
             columnGap: "10px",
             rowGap: "10px",
           }}
@@ -223,7 +234,7 @@ function App() {
                 style={{
                   display: "flex",
                   fontWeight: "bold",
-                  fontSize: "24px",
+                  fontSize: "1.5rem",
                   alignItems: "center",
                   justifyContent: "center",
                   borderColor: focused && !empty ? "grey" : "lightgrey",
