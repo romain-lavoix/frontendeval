@@ -83,11 +83,6 @@ function App() {
             valid: false,
             found: false,
           };
-        } else if (guess === word) {
-          return {
-            valid: true,
-            found: true,
-          };
         } else {
           const copyLines = [...lines];
           guess.split("").forEach((letter, idx) => {
@@ -103,10 +98,20 @@ function App() {
             }
           });
           setLines(copyLines);
-          return {
-            valid: true,
-            found: false,
-          };
+
+          if (guess === word) {
+            const copyLines = [...lines];
+
+            return {
+              valid: true,
+              found: true,
+            };
+          } else {
+            return {
+              valid: true,
+              found: false,
+            };
+          }
         }
       })
       .catch((error) => false);
@@ -152,15 +157,18 @@ function App() {
             if (!results.valid) {
               setMessageWithTimeout("this word is not in the dictionary");
             } else if (results.found) {
-              setMessageWithTimeout(
+              setMessage(
                 `You correctly guessed the word in ${currentLine + 1} tries!`
               );
             } else {
-              setMessageWithTimeout(
-                `You have ${6 - currentLine + 1} guesses remaining`
-              );
-              setCurrentLine(currentLine + 1);
-              setCurrentCell([currentLine + 1, 0]);
+              const remainingTries = 6 - (currentLine + 1);
+              if (remainingTries) {
+                setMessage(`You have ${remainingTries} guesses remaining`);
+                setCurrentLine(currentLine + 1);
+                setCurrentCell([currentLine + 1, 0]);
+              } else {
+                setMessage(`The word was '${word}'`);
+              }
             }
           }
         }
@@ -175,9 +183,14 @@ function App() {
           display: "flex",
           flexDirection: "column",
           gap: "50px",
+          margin: "12px",
         }}
       >
-        <div style={{ alignSelf: "center" }}>{message}</div>
+        <div
+          style={{ alignSelf: "center", fontSize: "24px", fontWeight: "bold" }}
+        >
+          {message}
+        </div>
         <div
           style={{
             display: "grid",
@@ -198,11 +211,11 @@ function App() {
             const key = `${i}-${j}`;
             let backgroundColor = "none";
             if (lines[i][j].p === 1) {
-              backgroundColor = "green";
+              backgroundColor = "lightgreen";
             } else if (lines[i][j].p === 2) {
-              backgroundColor = "orange";
+              backgroundColor = "#FED8B1";
             } else if (lines[i][j].p === 3) {
-              backgroundColor = "grey";
+              backgroundColor = "lightgrey";
             }
             return (
               <div
