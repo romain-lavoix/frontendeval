@@ -26,6 +26,7 @@
     border-style: solid;
     border-color: black;
     padding: 20px;
+    height: 200px;
     display: flex;
     flex-direction: column;
     gap: 30px;
@@ -44,6 +45,26 @@
 .job-date {
     color: dimgray;
 }
+
+.loading-cell {
+    text-align: center;
+    border-style: solid;
+    border-color: black;
+    padding: 20px;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.blur {
+    color: transparent;
+    text-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+
 
 .button {
     padding: 10px;
