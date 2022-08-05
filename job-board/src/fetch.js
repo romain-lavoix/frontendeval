@@ -1,4 +1,4 @@
-export const fetchJobIds = async (start = 0, end = 9) => {
+export const fetchJobIds = async (start, end) => {
   let jobIds = [];
   await fetch("https://hacker-news.firebaseio.com/v0/jobstories.json")
     .then((response) => response.json())
@@ -15,18 +15,36 @@ export const fetchJobMetadata = async (id) => {
   return metadata;
 };
 
-export const fetchJobsMetadata = async (start, end) => {
-  const jobIds = await fetchJobIds(start, end);
+export const fetchJobsMetadata = async (start, end = []) => {
+  let jobIds = await fetchJobIds(start, end);
   let promises = [];
   let newJobs = [];
+
   for (let i = 0; i < jobIds.length; i++) {
     promises.push(fetchJobMetadata(jobIds[i]));
   }
+
   await Promise.all(promises);
-  promises.forEach((job) => {
+  await promises.forEach((job) => {
     job.then((data) => {
       newJobs.push(data);
     });
   });
+
+  let cached_jobs = JSON.parse(window.localStorage.getItem("hn_jobs"));
+  if (!cached_jobs) {
+    cached_jobs = {
+      jobs: [],
+      cursor: 0,
+    };
+  }
+
+  window.localStorage.setItem(
+    "hn_jobs",
+    JSON.stringify({
+      jobs: cached_jobs.jobs.concat(newJobs),
+      cursor: end,
+    })
+  );
   return newJobs;
 };

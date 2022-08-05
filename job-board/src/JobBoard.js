@@ -10,9 +10,16 @@ function JobBoard() {
 
   useEffect(() => {
     async function fetchData() {
-      setLoading({ loading: true, nb: LOADING_SIZE });
-      const newJobs = await fetchJobsMetadata(0, cursor);
-      setLoading({ loading: false, nb: 0 });
+      const cached_jobs = JSON.parse(window.localStorage.getItem("hn_jobs"));
+
+      let newJobs = [];
+      if (cached_jobs) {
+        newJobs = cached_jobs.jobs.slice(0, LOADING_SIZE);
+      } else {
+        setLoading({ loading: true, nb: LOADING_SIZE });
+        newJobs = await fetchJobsMetadata(0, cursor);
+        setLoading({ loading: false, nb: 0 });
+      }
       setJobs(newJobs);
     }
     fetchData().then();
@@ -75,13 +82,25 @@ function JobBoard() {
           <button
             className="button"
             onClick={async () => {
-              setLoading({ loading: true, nb: MORE_LOADING_SIZE });
-              const newJobs = await fetchJobsMetadata(
-                cursor,
-                cursor + MORE_LOADING_SIZE
+              const cached_jobs = JSON.parse(
+                window.localStorage.getItem("hn_jobs")
               );
-              setLoading({ loading: false, nb: 0 });
-              setJobs((oldJobs) => oldJobs.concat(newJobs));
+              if (cursor + MORE_LOADING_SIZE <= cached_jobs.cursor) {
+                setJobs((currentJobs) =>
+                  currentJobs.concat(
+                    cached_jobs.jobs.slice(cursor, cursor + MORE_LOADING_SIZE)
+                  )
+                );
+              } else {
+                setLoading({ loading: true, nb: MORE_LOADING_SIZE });
+                const newJobs = await fetchJobsMetadata(
+                  cursor,
+                  cursor + MORE_LOADING_SIZE
+                );
+                setLoading({ loading: false, nb: 0 });
+                setJobs((currentJobs) => currentJobs.concat(newJobs));
+              }
+
               setCursor(cursor + MORE_LOADING_SIZE);
             }}
           >
