@@ -53,8 +53,25 @@
     font-weight: bold;
 }
 
+.job-date-by {
+    width: 100%;
+    display: flex;
+    color: dimgray;
+    justify-content: space-between;
+}
+
 .job-date {
     color: dimgray;
+    justify-content: space-between;
+}
+
+.user-profile:hover {
+    text-decoration: underline;
+}
+
+.user-profile {
+    color: grey;
+    font-weight: lighter;
 }
 
 .loading-cell {

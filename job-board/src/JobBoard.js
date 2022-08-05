@@ -60,8 +60,21 @@ function JobBoard() {
               >
                 <div className="job-title">{title}</div>
                 <div>{description}</div>
-                <div className="job-date">
-                  {new Date(job.time * 1000).toLocaleDateString()}
+                <div className="job-date-by">
+                  <div className="job-date">
+                    {new Date(job.time * 1000).toLocaleDateString()}
+                  </div>
+                  <div
+                    className="user-profile"
+                    onClick={() => {
+                      window.open(
+                        `https://news.ycombinator.com/user?id=${job.by}`,
+                        "_blank"
+                      );
+                    }}
+                  >
+                    {job.by}
+                  </div>
                 </div>
               </div>
             );
@@ -73,7 +86,10 @@ function JobBoard() {
                 <div className="blur">
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit, ed
                 </div>
-                <div className="blur">01/01/2020</div>
+                <div className="job-date-by">
+                  <div className="job-date blur">01/01/2020</div>
+                  <div className="user-profile blur">username</div>
+                </div>
               </div>
             );
           })}
