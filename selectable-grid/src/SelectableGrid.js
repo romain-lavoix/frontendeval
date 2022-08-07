@@ -1,15 +1,34 @@
 import "./SelectableGrid.css";
-import { HEIGHT, WIDTH } from "./constants";
+import { NB_ROWS, NB_COLUMNS, CELL_WIDTH, CELL_HEIGHT } from "./constants";
 import { range } from "./utils";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 
 function SelectableGrid() {
-  const [select, setSelect] = useState({});
+  const [selection, setSelection] = useState({});
   const mouseDownCoordsRef = useRef({
     x: 0,
     y: 0,
   });
   const gridRef = useRef({});
+
+  useEffect(() => {
+    range(0, NB_ROWS * NB_COLUMNS - 1).map((id) => {
+      const cell = document.getElementById(`cell-${id}`);
+      if (cell) {
+        const cell_rect = cell.getBoundingClientRect();
+        if (
+          cell_rect.left >= selection.left &&
+          cell_rect.right <= selection.right &&
+          cell_rect.top >= selection.top &&
+          cell_rect.bottom <= selection.bottom
+        ) {
+          cell.style.backgroundColor = "blue";
+        } else {
+          cell.style.backgroundColor = "unset";
+        }
+      }
+    });
+  }, [selection, setSelection]);
 
   return (
     <div
@@ -42,7 +61,7 @@ function SelectableGrid() {
           (select.top < grid.top && select.bottom < grid.top) ||
           (select.top > grid.bottom && select.bottom > grid.bottom)
         ) {
-          setSelect(select);
+          setSelection(select);
         } else {
           select.left = select.left < grid.left ? grid.left : select.left;
           select.right = select.right > grid.right ? grid.right : select.right;
@@ -50,7 +69,7 @@ function SelectableGrid() {
           select.bottom =
             select.bottom > grid.bottom ? grid.bottom : select.bottom;
 
-          setSelect(select);
+          setSelection(select);
         }
       }}
     >
@@ -59,27 +78,26 @@ function SelectableGrid() {
           ref={gridRef}
           className="grid"
           style={{
-            gridTemplateRows: `repeat(${HEIGHT}, 1fr)`,
-            gridTemplateColumns: `repeat(${WIDTH}, 1fr)`,
+            gridTemplateRows: `repeat(${NB_ROWS}, 1fr)`,
+            gridTemplateColumns: `repeat(${NB_COLUMNS}, 1fr)`,
             zIndex: 2,
           }}
         >
-          {range(0, HEIGHT * WIDTH - 1).map((idx) => {
+          {range(0, NB_ROWS * NB_COLUMNS - 1).map((idx) => {
             const id = `cell-${idx}`;
-            return <div key={id} id={id} className="cell"></div>;
+            return (
+              <div
+                key={id}
+                id={id}
+                className="cell"
+                style={{
+                  width: `${CELL_WIDTH}px`,
+                  height: `${CELL_HEIGHT}px`,
+                }}
+              ></div>
+            );
           })}
         </div>
-        <div
-          style={{
-            position: "fixed",
-            top: `${select.top}px`,
-            left: `${select.left}px`,
-            width: `${select.right - select.left}px`,
-            height: `${select.bottom - select.top}px`,
-            backgroundColor: "blue",
-            zIndex: 1,
-          }}
-        ></div>
       </>
     </div>
   );
