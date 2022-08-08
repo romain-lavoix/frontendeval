@@ -11,6 +11,7 @@ import { useRef, useState, useEffect } from "react";
 
 function SelectableGrid() {
   const [selection, setSelection] = useState(SELECTION_INITIAL_STATE);
+  const [boundingBox, setBoundingBox] = useState(SELECTION_INITIAL_STATE);
   const [mouseUp, setMouseUp] = useState(false);
   const [mouseDown, setMouseDown] = useState(false);
 
@@ -66,6 +67,8 @@ function SelectableGrid() {
           select.bottom = mouseDownCoordsRef.current.y;
         }
 
+        setBoundingBox({ ...select });
+
         if (
           (select.left < grid.left && select.right < grid.left) ||
           (select.left > grid.right && select.right > grid.right) ||
@@ -87,6 +90,7 @@ function SelectableGrid() {
         setMouseDown(true);
         setMouseUp(false);
         setSelection(SELECTION_INITIAL_STATE);
+        setBoundingBox(SELECTION_INITIAL_STATE);
         mouseDownCoordsRef.current = { x: e.pageX, y: e.pageY };
       }}
       onMouseUp={() => {
@@ -122,10 +126,10 @@ function SelectableGrid() {
             <div
               className="bounding-box"
               style={{
-                top: selection.top,
-                left: selection.left,
-                width: selection.right - selection.left,
-                height: selection.bottom - selection.top,
+                top: boundingBox.top,
+                left: boundingBox.left,
+                width: boundingBox.right - boundingBox.left,
+                height: boundingBox.bottom - boundingBox.top,
               }}
             ></div>
           )}
