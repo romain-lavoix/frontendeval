@@ -1,10 +1,16 @@
 import "./SelectableGrid.css";
-import { NB_ROWS, NB_COLUMNS, CELL_WIDTH, CELL_HEIGHT } from "./constants";
+import {
+  NB_ROWS,
+  NB_COLUMNS,
+  CELL_WIDTH,
+  CELL_HEIGHT,
+  SELECTION_INITIAL_STATE,
+} from "./constants";
 import { range } from "./utils";
 import { useRef, useState, useEffect } from "react";
 
 function SelectableGrid() {
-  const [selection, setSelection] = useState({});
+  const [selection, setSelection] = useState(SELECTION_INITIAL_STATE);
   const [mouseUp, setMouseUp] = useState(false);
   const [mouseDown, setMouseDown] = useState(false);
 
@@ -66,7 +72,7 @@ function SelectableGrid() {
           (select.top < grid.top && select.bottom < grid.top) ||
           (select.top > grid.bottom && select.bottom > grid.bottom)
         ) {
-          setSelection({});
+          setSelection(SELECTION_INITIAL_STATE);
         } else {
           select.left = select.left < grid.left ? grid.left : select.left;
           select.right = select.right > grid.right ? grid.right : select.right;
@@ -80,7 +86,7 @@ function SelectableGrid() {
       onMouseDown={(e) => {
         setMouseDown(true);
         setMouseUp(false);
-        setSelection({});
+        setSelection(SELECTION_INITIAL_STATE);
         mouseDownCoordsRef.current = { x: e.pageX, y: e.pageY };
       }}
       onMouseUp={() => {
@@ -112,6 +118,17 @@ function SelectableGrid() {
               ></div>
             );
           })}
+          {mouseDown && (
+            <div
+              className="bounding-box"
+              style={{
+                top: selection.top,
+                left: selection.left,
+                width: selection.right - selection.left,
+                height: selection.bottom - selection.top,
+              }}
+            ></div>
+          )}
         </div>
       </>
     </div>
