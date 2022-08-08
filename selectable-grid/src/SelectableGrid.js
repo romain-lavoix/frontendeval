@@ -5,6 +5,9 @@ import { useRef, useState, useEffect } from "react";
 
 function SelectableGrid() {
   const [selection, setSelection] = useState({});
+  const [mouseUp, setMouseUp] = useState(false);
+  const [mouseDown, setMouseDown] = useState(false);
+
   const mouseDownCoordsRef = useRef({
     x: 0,
     y: 0,
@@ -17,26 +20,28 @@ function SelectableGrid() {
       if (cell) {
         const cell_rect = cell.getBoundingClientRect();
         if (
+          (mouseDown || mouseUp) &&
           cell_rect.left >= selection.left &&
           cell_rect.right <= selection.right &&
           cell_rect.top >= selection.top &&
           cell_rect.bottom <= selection.bottom
         ) {
-          cell.style.backgroundColor = "blue";
+          cell.style.backgroundColor = mouseUp ? "blue" : "grey";
         } else {
           cell.style.backgroundColor = "unset";
         }
       }
+      return null;
     });
-  }, [selection, setSelection]);
+  }, [selection, setSelection, mouseUp, setMouseUp, mouseDown, setMouseDown]);
 
   return (
     <div
       className="grid-container"
-      onMouseDown={(e) => {
-        mouseDownCoordsRef.current = { x: e.pageX, y: e.pageY };
-      }}
-      onMouseUp={(e) => {
+      onMouseMove={(e) => {
+        if (!mouseDown && !mouseDown && mouseUp) {
+          return;
+        }
         const grid = gridRef.current.getBoundingClientRect();
         const select = {};
 
@@ -61,7 +66,7 @@ function SelectableGrid() {
           (select.top < grid.top && select.bottom < grid.top) ||
           (select.top > grid.bottom && select.bottom > grid.bottom)
         ) {
-          setSelection(select);
+          setSelection({});
         } else {
           select.left = select.left < grid.left ? grid.left : select.left;
           select.right = select.right > grid.right ? grid.right : select.right;
@@ -71,6 +76,16 @@ function SelectableGrid() {
 
           setSelection(select);
         }
+      }}
+      onMouseDown={(e) => {
+        setMouseDown(true);
+        setMouseUp(false);
+        setSelection({});
+        mouseDownCoordsRef.current = { x: e.pageX, y: e.pageY };
+      }}
+      onMouseUp={() => {
+        setMouseUp(true);
+        setMouseDown(false);
       }}
     >
       <>
