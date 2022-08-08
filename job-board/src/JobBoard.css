@@ -1,4 +1,10 @@
 .main-container {
+    /* FTL: Why add this? Your site has a horizontal scrollbar right now due to this 
+        The scrollbar takes up horizontal space within your window due to contents
+        exceeding the window, but because of min-width: 100vw, the contents
+        exceed the allowed space (100vw - horizontal scrollbar width)
+        and hence you see a horizontal scrollbar.
+    */
     min-width: 100vw;
     display: flex;
     justify-content: center;
@@ -16,6 +22,7 @@
     gap: 20px
 }
 
+/* FTL: Be sure to remove these empty classes during an interview. */
 .title {
 }
 
