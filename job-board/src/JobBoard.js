@@ -123,6 +123,12 @@ function JobBoard() {
             // something like this: https://dribbble.com/shots/3826035-Loading-States-Shimmer
             // You'll see this effect on facebook.com if you scroll your feed fast. Blurring is actually quite uncommon.
             return (
+              // FTL: The job cards should be extracted out into a component. Now you are rendering the job card
+              // in two places, the actual one with the contents, and the placeholder. When you change one, you have 
+              // to change the other for the loading state to make sense. You could create a new component JobCard, 
+              // and has a prop called `blur`/`shimmer` which is set to true when you render the loading state.
+              // This way, the layout between the actual and the loading state will be consistent.
+
               // FTL: Not sure if you're aware but the key only needs to be unique among
               // its siblings. So there's no need to add a prefix. You can just do `key={idx}`
               <div key={idx} className="loading-cell">
@@ -140,6 +146,9 @@ function JobBoard() {
         </div>
         <div>
           <button
+            // FTL: Add cursor: pointer to buttons for better UX.
+            // FTL: You typically also want to disable buttons whenever there's
+            // a pending background request.
             className="button"
             onClick={async () => {
               // FTL: Use camelCase for variables in JavaScript
