@@ -1,0 +1,19 @@
+{
+  "name": "infinity-scrolling-tiles",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "parcel index.html --open"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.18.10",
+    "@babel/preset-react": "^7.18.6",
+    "parcel-bundler": "^1.12.5",
+    "prettier": "^2.7.1"
+  }
+}

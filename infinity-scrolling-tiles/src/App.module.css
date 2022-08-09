@@ -1,0 +1,33 @@
+.container {
+    border: 12px solid white;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    height: 200px;
+    z-index: -1;
+
+}
+
+.image {
+    height: 100%;
+    width: auto;
+}
+
+.image:hover {
+    opacity: 50%;
+}
+
+.button-container {
+    align-self: flex-end;
+}
+
+.selected-image {
+    max-width: 100vw;
+    height: auto;
+}
