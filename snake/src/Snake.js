@@ -58,9 +58,10 @@ function Snake() {
   }
 
   grid[applePosition.y][applePosition.x] = "A";
-  snakePosition.forEach((position) => {
+  snakePosition.forEach((position, idx) => {
     if (grid[position.y]) {
-      grid[position.y][position.x] = "S";
+      grid[position.y][position.x] =
+        idx === snakePosition.length - 1 ? "H" : "S";
     }
   });
 
@@ -83,22 +84,29 @@ function Snake() {
       tabIndex={-1}
       className={styles.containerGrid}
       onKeyDown={(e) => {
-        const key = e.key;
-        switch (key) {
+        switch (e.key) {
           case "a": {
-            dispatch({ type: CHANGE_DIRECTION, payload: MOVE_LEFT });
+            if (snakeDirection !== MOVE_RIGHT) {
+              dispatch({ type: CHANGE_DIRECTION, payload: MOVE_LEFT });
+            }
             break;
           }
           case "d": {
-            dispatch({ type: CHANGE_DIRECTION, payload: MOVE_RIGHT });
+            if (snakeDirection !== MOVE_LEFT) {
+              dispatch({ type: CHANGE_DIRECTION, payload: MOVE_RIGHT });
+            }
             break;
           }
           case "w": {
-            dispatch({ type: CHANGE_DIRECTION, payload: MOVE_UP });
+            if (snakeDirection !== MOVE_DOWN) {
+              dispatch({ type: CHANGE_DIRECTION, payload: MOVE_UP });
+            }
             break;
           }
           case "s": {
-            dispatch({ type: CHANGE_DIRECTION, payload: MOVE_DOWN });
+            if (snakeDirection !== MOVE_UP) {
+              dispatch({ type: CHANGE_DIRECTION, payload: MOVE_DOWN });
+            }
             break;
           }
           case " ": {
@@ -133,6 +141,8 @@ function Snake() {
                 let backgroundColor;
                 if (cell === "A") {
                   backgroundColor = "green";
+                } else if (cell === "H") {
+                  backgroundColor = "yellow";
                 } else if (cell === "S") {
                   backgroundColor = "grey";
                 } else {
@@ -142,7 +152,10 @@ function Snake() {
                   <div
                     key={`${i}-${j}`}
                     className={styles.cell}
-                    style={{ backgroundColor }}
+                    style={{
+                      backgroundColor,
+                      borderStyle: cell !== "" ? "solid" : "unset",
+                    }}
                   ></div>
                 );
               });
