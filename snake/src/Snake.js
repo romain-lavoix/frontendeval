@@ -127,41 +127,39 @@ function Snake() {
         <div className={styles.score}>
           <h1>{score}</h1>
         </div>
-        {gameOver ? (
+        {gameOver && (
           <div className={styles.gameOverContainer}>
             <div className={styles.gameOverMessage}>
               <div>GAME OVER</div>
               <div>PRESS SPACE TO CONTINUE</div>
             </div>
           </div>
-        ) : (
-          <div className={styles.grid}>
-            {grid.map((line, i) => {
-              return line.map((cell, j) => {
-                let backgroundColor;
-                if (cell === "A") {
-                  backgroundColor = "green";
-                } else if (cell === "H") {
-                  backgroundColor = "yellow";
-                } else if (cell === "S") {
-                  backgroundColor = "grey";
-                } else {
-                  backgroundColor = "unset";
-                }
-                return (
-                  <div
-                    key={`${i}-${j}`}
-                    className={styles.cell}
-                    style={{
-                      backgroundColor,
-                      borderStyle: cell !== "" ? "solid" : "unset",
-                    }}
-                  ></div>
-                );
-              });
-            })}
-          </div>
         )}
+        <div className={styles.grid}>
+          {grid.map((line, i) => {
+            return line.map((cell, j) => {
+              let backgroundColor;
+              if (cell === "A") {
+                backgroundColor = "green";
+              } else if (cell === "H") {
+                backgroundColor = "yellow";
+              } else if (cell === "S") {
+                backgroundColor = "grey";
+              } else {
+                backgroundColor = "unset";
+              }
+              return (
+                <div
+                  key={`${i}-${j}`}
+                  style={{
+                    backgroundColor,
+                    borderStyle: cell !== "" ? "solid" : "unset",
+                  }}
+                ></div>
+              );
+            });
+          })}
+        </div>
       </div>
     </div>
   );
