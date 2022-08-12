@@ -3,8 +3,7 @@ import {
   MOVE_RIGHT,
   MOVE_DOWN,
   MOVE_LEFT,
-  INC_SCORE,
-  INIT_APPLE,
+  START_GAME,
   RESTART_GAME,
   INIT_STATE,
   GRID_SIZE,
@@ -67,6 +66,7 @@ export const reducer = (state, action) => {
           y: random(0, GRID_SIZE),
         },
         snakeLength: state.snakeLength + 1,
+        snakeSpeed: state.snakeSpeed - 10,
       };
     case GAME_OVER:
       return {
@@ -77,6 +77,12 @@ export const reducer = (state, action) => {
     case RESTART_GAME:
       return {
         ...INIT_STATE,
+        startGame: true,
+      };
+    case START_GAME:
+      return {
+        ...state,
+        startGame: true,
       };
     default:
       return state;

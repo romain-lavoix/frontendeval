@@ -28,7 +28,7 @@
 }
 
 
-.gameOverContainer {
+.gameOverlayContainer {
     position: fixed;
     border-top: solid black 1px;
     width: 600px;
@@ -45,7 +45,7 @@
     opacity: 70%;
 }
 
-.gameOverMessage {
+.gameOverlayMessage {
     display: flex;
     flex-direction: column;
     gap: 10px;

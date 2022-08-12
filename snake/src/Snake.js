@@ -9,6 +9,7 @@ import {
   APPLE_COLLECTED,
   GAME_OVER,
   RESTART_GAME,
+  START_GAME,
 } from "./constants";
 import styles from "./Snake.module.css";
 import { useReducer, useRef, useEffect } from "react";
@@ -19,8 +20,15 @@ function Snake() {
   const containerRef = useRef(null);
   const intervalRef = useRef(null);
   const directionChangeRef = useRef(null);
-  const { applePosition, snakePosition, score, snakeDirection, gameOver } =
-    state;
+  const {
+    applePosition,
+    snakePosition,
+    score,
+    snakeDirection,
+    gameOver,
+    startGame,
+    snakeSpeed,
+  } = state;
   const grid = [];
   const lastSnakePosition = snakePosition[snakePosition.length - 1];
   const snakePositionSet = new Set();
@@ -69,14 +77,18 @@ function Snake() {
     dispatch({ type: snakeDirection });
   };
 
+  useEffect(() => containerRef.current.focus(), []);
+
   useEffect(() => {
-    clearInterval(intervalRef.current);
-    containerRef.current.focus();
-    intervalRef.current = setInterval(() => {
-      directionChangeRef.current();
-      return () => clearInterval(intervalRef.current);
-    }, 250);
-  }, []);
+    if (startGame) {
+      clearInterval(intervalRef.current);
+
+      intervalRef.current = setInterval(() => {
+        directionChangeRef.current();
+        return () => clearInterval(intervalRef.current);
+      }, snakeSpeed);
+    }
+  }, [startGame, snakeSpeed]);
 
   return (
     <div
@@ -119,6 +131,11 @@ function Snake() {
             }
             break;
           }
+          case "Enter": {
+            if (!startGame) {
+              dispatch({ type: START_GAME });
+            }
+          }
           default:
         }
       }}
@@ -128,10 +145,19 @@ function Snake() {
           <h1>{score}</h1>
         </div>
         {gameOver && (
-          <div className={styles.gameOverContainer}>
-            <div className={styles.gameOverMessage}>
+          <div className={styles.gameOverlayContainer}>
+            <div className={styles.gameOverlayMessage}>
               <div>GAME OVER</div>
               <div>PRESS SPACE TO CONTINUE</div>
+            </div>
+          </div>
+        )}
+        {!startGame && (
+          <div className={styles.gameOverlayContainer}>
+            <div className={styles.gameOverlayMessage}>
+              <div>READY ?</div>
+              <div>USE WASD TO CONTROL THE WORM</div>
+              <div>PRESS ENTER TO PLAY</div>
             </div>
           </div>
         )}
