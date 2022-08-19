@@ -14,9 +14,13 @@ import {
 } from "./constants";
 import { random } from "./utils";
 
+// FTL: Good use of a reducer. Most games will benefit from the use of reducers 
+// and Snake is no exception.
 export const reducer = (state, action) => {
   console.log(`${action.type} ${action.payload ? action.payload : ""}`);
 
+  // FTL: Could define this as a function outside of this function.
+  // FTL: Nit: use camelCase for variables in JavaScript.
   const move = (snake_position, inc_x, inc_y) => {
     const snake_position_copy = [...snake_position];
     const last = snake_position_copy[snake_position_copy.length - 1];
@@ -61,11 +65,20 @@ export const reducer = (state, action) => {
       return {
         ...state,
         score: state.score + 1,
+        // FTL: This should be a utility function that takes in the current
+        // snake position so that you can generate an apple that
+        // doesn't overlap with the snake body. This bug will become
+        // very apparent when the snake becomes very long and the chance
+        // of overlapping is very high.
+        // With such a utility function, it should also be used when
+        // generating the initial position as well.
         applePosition: {
           x: random(0, GRID_SIZE),
           y: random(0, GRID_SIZE),
         },
         snakeLength: state.snakeLength + 1,
+        // FTL: You likely want to make the snake speed delta in the
+        // constants as well.
         snakeSpeed: state.snakeSpeed - 10,
       };
     case GAME_OVER:

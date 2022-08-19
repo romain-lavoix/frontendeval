@@ -11,6 +11,8 @@ export const APPLE_COLLECTED = "APPLE_COLLECTED";
 export const RESTART_GAME = "RESTART_GAME";
 export const START_GAME = "START_GAME";
 
+// FTL: The apple position cannot be determine without caring about the current snake position
+// as it can overlap with the snake positions.
 export const APPLE_INIT_POSITION = {
   x: random(0, GRID_SIZE),
   y: random(0, GRID_SIZE),
@@ -22,6 +24,11 @@ export const SNAKE_INIT_POSITION = [
   },
 ];
 
+// FTL: It'd be better to group related state properties 
+// together instead of having a flat object.
+// 1. Snake-related properties
+// 2. Apple position
+// 3. Game-related properties
 export const INIT_STATE = {
   applePosition: APPLE_INIT_POSITION,
   snakePosition: SNAKE_INIT_POSITION,
