@@ -2,6 +2,10 @@ import { useState, useContext, createContext } from "react";
 import cx from "classnames";
 
 function NextButton() {
+  // FTL: It's not a good to pass the entire application
+  // state around. This button only needs to tell the parent
+  // it is being clicked. The logic to increment the step
+  // can be done within the parent.
   const { state, setState } = useContext(AppContext);
   return (
     <button
@@ -22,8 +26,13 @@ function NextButton() {
 }
 
 function BackButton(props) {
+  // FTL: It's not a good to pass the entire application
+  // state around. This button only needs to tell the parent
+  // it is being clicked. The logic to increment the step
+  // can be done within the parent.
   const { state, setState } = useContext(AppContext);
   return (
+    // FTL: Recommend using a button instead.
     <a
       style={{
         visibility: props.hidden ? "hidden" : "unset",
@@ -39,6 +48,8 @@ function BackButton(props) {
         });
       }}
     >
+      {/* Use aria-hidden around the "<" otherwise screen
+      readers will read out the link as "Less than back" */}
       {`< Back`}
     </a>
   );
@@ -56,7 +67,13 @@ function Step1() {
 
   return (
     <div id={"screen1"} style={stepStyle}>
+      {/* FTL: You can put the button outside the step components instead
+      and let the app control the visibility. */}
       <BackButton hidden />
+      {/* FTL: Use ids to link up the label and input fields.
+       FTL: React 18 has a new useId() hook which can be used for such
+       purposes. Reason to use this hook is that hardcoding static ids
+       makes the component less reusable. */}
       <label>Name</label>
       <input
         type={"text"}
@@ -70,6 +87,11 @@ function Step1() {
           })
         }
       />
+      {/* FTL: Likewise, the Next and Submit buttons can be put outside the step components instead
+      and let the app control when to show which. 
+      
+      Imagine you had a new step to add/existing step to remove, you'd have to modify the existing Step components
+      and shift the buttons in/out of the steps. */}
       <NextButton />
     </div>
   );
@@ -107,6 +129,7 @@ function Step3(props) {
       <BackButton />
       <label>Birthday</label>
       <input
+        // FTL: Nit, the placeholder should be mm/dd/yy.
         placeholder="birthday"
         type="date"
         name="birthday"
@@ -131,6 +154,7 @@ function Step4(props) {
       <BackButton />
       <label>Password</label>
       <input
+        // FTL: Password fields don't need placeholders.
         placeholder="password"
         type="password"
         name="password"
@@ -151,6 +175,7 @@ const AppContext = createContext();
 
 function MultiStepForm() {
   const [state, setState] = useState({
+    // FTL: Better to separate out the step number vs the form data.
     step: 1,
     name: "",
     emails: "",
@@ -165,6 +190,10 @@ function MultiStepForm() {
   };
 
   return (
+    // FTL: Context is not needed given you can pass them as props.
+    // General tip: In interview settings given the amount of time you have
+    // you usually won't need to build applications which are complex/big enough
+    // that you need to use context.
     <AppContext.Provider value={{ state, setState }}>
       <div
         style={{
