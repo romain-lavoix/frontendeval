@@ -33,12 +33,20 @@ function Snake() {
   const lastSnakePosition = snakePosition[snakePosition.length - 1];
   const snakePositionSet = new Set();
 
+  // FTL: You're doing too much state manipulation within your render function.
+  // If you have a reducer, most state manipulation should go into it.
+  // You can actually define a GAME_LOOP/TICK action within your reducer
+  // and shift your game loop updates into it. The component will just be in-charge
+  // of calling the GAME_LOOP action at every fixed interval.
   snakePosition.forEach((pos, idx) => {
     if (idx !== snakePosition.length - 1) {
       snakePositionSet.add(`${pos.y}-${pos.x}`);
     }
   });
 
+  // FTL: Dispatches are considered side effects and you should
+  // try to avoid doing dispatches within the rendering pass.
+  // These logic can be handled in the game loop instead.
   if (
     lastSnakePosition.x < 0 ||
     lastSnakePosition.x > GRID_SIZE - 1 ||
@@ -79,6 +87,7 @@ function Snake() {
 
   useEffect(() => containerRef.current.focus(), []);
 
+  // FTL: This useEffect is well-written!
   useEffect(() => {
     if (startGame) {
       clearInterval(intervalRef.current);
@@ -96,8 +105,12 @@ function Snake() {
       tabIndex={-1}
       className={styles.containerGrid}
       onKeyDown={(e) => {
+        // FTL: These actions stuff can be extracted out into another module to be even more
+        // reusable.
         switch (e.key) {
           case "a": {
+            // FTL: The check for the direction can be moved into the reducer instead.
+            // The reducer can deem it to be a no-op and return the current state.
             if (snakeDirection !== MOVE_RIGHT) {
               dispatch({ type: CHANGE_DIRECTION, payload: MOVE_LEFT });
             }
@@ -165,6 +178,10 @@ function Snake() {
           {grid.map((line, i) => {
             return line.map((cell, j) => {
               let backgroundColor;
+              // FTL: It'd be better to define an object to
+              // map a cell value to its color somewhere else.
+              // FTL: But in general it's good you somewhat have decoupling of
+              // the data model vs the rendering approach. It just isn't distinct enough.
               if (cell === "A") {
                 backgroundColor = "green";
               } else if (cell === "H") {
