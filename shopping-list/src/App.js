@@ -9,12 +9,12 @@ function App() {
 
   useEffect(() => {
     if (input.length > 1) {
-      // FTL: Your debouncing is actually incorrect. You need to create a 
+      // FTL: Your debouncing is actually incorrect. You need to create a
       // debounced function of the API request and repeatedly call it.
-      // 
-      // The debounce() call should take in a function that calls the API, but instead 
+      //
+      // The debounce() call should take in a function that calls the API, but instead
       // you're calling the API request within a debounce() call.
-      // 
+      //
       // As a result, none of the API requests are debounced at all.
       debounce(
         axios
@@ -88,6 +88,7 @@ function App() {
           {searchResults.map((searchResult, searchResults_idx) => {
             return (
               <div
+                tabIndex={0}
                 key={searchResults_idx}
                 onClick={(e) => {
                   setItems((old_items) => [

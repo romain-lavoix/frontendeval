@@ -40,7 +40,7 @@ function App() {
   const TwoFAInput = (props) => {
     // FTL: Context is unnecessary here because:
     // - You can pass state as props since it's only one level
-    // - You declared this component within the App component
+    // - You declared this component within the CryptoConverter component
     //   and it has access to the component state.
     const { state, setState } = useContext(AppContext);
     const { index } = props;

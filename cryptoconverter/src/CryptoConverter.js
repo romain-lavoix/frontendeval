@@ -30,7 +30,7 @@ const reducer = (state, action) => {
   }
 };
 
-function App() {
+function CryptoConverter() {
   const currencies = ["USD", "EUR", "GBP", "CNY", "JPY"];
   const [state, dispatch] = useReducer(reducer, {
     fiatAmount: "",
@@ -145,4 +145,4 @@ function App() {
   );
 }
 
-export default App;
+export default CryptoConverter;
