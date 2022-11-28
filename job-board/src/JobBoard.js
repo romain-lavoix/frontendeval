@@ -57,8 +57,10 @@ function JobBoard() {
           {jobs.map((job) => {
             // FTL: This way of splitting the title is buggy and only works if the company name is a single world.
             // You should split using the (YC XXX) token instead. You can use Regex for it.
-            const [title, description] = job.title.split(/\(YC \w+\)/).map(s => s.trim())
-            if (description.length >= DESC_CHAR_LIMIT) {
+            let [title, description] = job.title
+              .split(/\(YC \w+\)/)
+              .map((s) => s.trim());
+            if (description && description.length >= DESC_CHAR_LIMIT) {
               description = description.substring(0, DESC_CHAR_LIMIT) + "...";
             }
             return (
@@ -77,7 +79,7 @@ function JobBoard() {
                     // 3. Users can choose to open in new tab if they want. For this qn the requirements state to open in a new tab so this point isn't too relevant
                     // 4. Users can copy the link by rightclicking on the card
                     // 5. Links have the pointer cursor styling which tells the user this is a link
-                    // 6. Keyboard users can tab through the items and hit enter to navigate to a link. Divs by default are not focussable. 
+                    // 6. Keyboard users can tab through the items and hit enter to navigate to a link. Divs by default are not focussable.
                     //    You can mitigate this by adding tabIndex={0} to your <div> but the aria-role is still wrong and is not as good as using a link in the first place.
                     //    Currently your list is not usable by keyboard users at all.
                     window.open(job.url, "_blank");
@@ -124,8 +126,8 @@ function JobBoard() {
             // You'll see this effect on facebook.com if you scroll your feed fast. Blurring is actually quite uncommon.
             return (
               // FTL: The job cards should be extracted out into a component. Now you are rendering the job card
-              // in two places, the actual one with the contents, and the placeholder. When you change one, you have 
-              // to change the other for the loading state to make sense. You could create a new component JobCard, 
+              // in two places, the actual one with the contents, and the placeholder. When you change one, you have
+              // to change the other for the loading state to make sense. You could create a new component JobCard,
               // and has a prop called `blur`/`shimmer` which is set to true when you render the loading state.
               // This way, the layout between the actual and the loading state will be consistent.
 
@@ -157,7 +159,7 @@ function JobBoard() {
               );
               // FTL: Your button shouldn't contain that much logic. It'd be
               // better to move the data fetching into a single module. You just
-              // tell that module what data you need, and the module will return you 
+              // tell that module what data you need, and the module will return you
               // the data without the caller caring or knowing how it's achieved.
               // In the module it will either fetch from the cache (localStorage)
               // or make a network request if it doesn't exist.
